@@ -36,7 +36,9 @@ function cleanAttributes(tagName, attrText, { allowRemoteImages }) {
           continue;
         }
         out += ` ${name}="${escapeAttr(v)}"`;
-        if (isImg) out += ` referrerpolicy="no-referrer" loading="lazy"`;
+        if (isImg) out += ` referrerpolicy="no-referrer"`; // no loading="lazy":
+        // when the reader opts in to remote images they want to see them
+        // now, not only after scrolling them into view.
       } else if (isImg && /^data:image\/(png|gif|jpe?g|webp);base64,/i.test(v)) {
         out += ` ${name}="${escapeAttr(v)}"`; // inline images are part of the mail itself
       }

@@ -679,6 +679,11 @@ function openMessage(id, images) {
       '</div>' +
       '<div id="d-body"></div>';
     $('msg-detail').innerHTML = html;
+    // Detail-view OTP chips must copy on click, just like the list view:
+    // without this the "可能係驗證碼（撳嚟複製）" chips do nothing.
+    Array.prototype.forEach.call($('msg-detail').querySelectorAll('.otp'), function (s) {
+      s.addEventListener('click', function () { copyText(s.textContent.trim(), null); });
+    });
     var body = $('d-body');
     if (m.htmlDocument) {
       var f = document.createElement('iframe');

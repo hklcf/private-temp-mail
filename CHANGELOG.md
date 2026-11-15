@@ -4,6 +4,29 @@ All notable changes to this project are documented here. The format is
 based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.2.2] - 2026-11-16
+
+### Fixed
+
+- Clicking an OTP chip in the message detail view
+  ("可能係驗證碼（撳嚟複製）") did nothing: `openMessage()` rendered
+  the chips but never attached a click handler (only the message list
+  had one). The detail view now wires click-to-copy on its OTP chips.
+  Added `test/ui-detail-otp.test.js` (3 regression tests).
+- "顯示外來圖片" toggled the button but the images stayed broken.
+  Mail renders in a `srcdoc` iframe, which inherits the parent page's
+  CSP as an extra policy on top of its own `<meta>` CSP, so a remote
+  image must pass both; the page CSP said `img-src 'self' data:`,
+  which blocked every remote image even after the reader opted in.
+  The page CSP now allows `https:` images too. The `srcdoc`
+  document's own CSP still blocks remote images by default and only
+  allows them after a per-message opt-in, so the page itself loads
+  nothing new. Added `test/csp.test.js` (1 regression test).
+- Opted-in remote images no longer carry `loading="lazy"`: when the
+  reader explicitly asks to show them, they load straight away
+  instead of waiting to be scrolled into view.
+- Version 0.2.1 → 0.2.2.
+
 ## [0.2.1] - 2026-11-15
 
 ### Fixed

@@ -32,6 +32,9 @@ test("remote images load only when explicitly allowed", () => {
   const out = sanitizeEmailHtml('<img src="https://cdn.example/photo.jpg">', { allowRemoteImages: true });
   assert.ok(/<img[^>]*\ssrc="https:\/\/cdn\.example\/photo\.jpg"/.test(out));
   assert.ok(out.includes('referrerpolicy="no-referrer"'));
+  // No loading="lazy": when the reader opts in to remote images they must
+  // load straight away, not only after being scrolled into view.
+  assert.ok(!out.includes("loading="));
 });
 
 test("inline data images and table layout survive", () => {

@@ -20,8 +20,16 @@ export default {
             "Content-Type": "text/html; charset=utf-8",
             "X-Frame-Options": "DENY",
             "Referrer-Policy": "no-referrer",
+            // img-src must include https: as well as 'self' data:. Mail is
+            // rendered in a srcdoc iframe, which inherits this page's CSP
+            // as an extra policy on top of its own <meta> CSP, so a remote
+            // image must pass BOTH. The srcdoc document's own CSP still
+            // blocks remote images by default (img-src data: only) and
+            // allows them only after the reader opts in per message, so
+            // the https: here changes nothing for the page itself — it
+            // only lets the per-message opt-in actually load anything.
             "Content-Security-Policy":
-              "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-src 'self'",
+              "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; frame-src 'self'",
           },
         });
       }
