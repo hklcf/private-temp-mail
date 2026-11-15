@@ -55,13 +55,13 @@ at creation, stored only as a hash.
 
 ```
 sender ──SMTP──▶ Cloudflare Email Routing (catch-all, per apex domain)
-                      │  email()
-                      ▼
+                    │  email()
+                    ▼
                  Worker ── parse (postal-mime) ──▶ R2: raw .eml + attachments
-                      │                            D1: mailboxes, messages,
-                      │                                sessions, tombstones
-                      ├─ fetch() → web UI + JSON API (access-code sessions)
-                      └─ scheduled() → hourly cleanup of expired mailboxes
+                    │                              D1: mailboxes, messages,
+                    │                                  sessions, tombstones
+                    ├─ fetch() → web UI + JSON API (access-code sessions)
+                    └─ scheduled() → hourly cleanup of expired mailboxes
 ```
 
 Mail is only accepted for mailboxes that were created in the UI and have
@@ -132,12 +132,11 @@ npm run dev  # wrangler dev
 
 ## 繁體中文簡介
 
-自行部署嘅私人臨時郵箱，行晒喺 Cloudflare 上面（Email Routing + Workers
-+ D1 + R2），只收信、唔使註冊。每個郵箱由系統隨機生成地址，再加一條
-隨機存取碼做登入；保存期限建立嗰陣揀 7／30／90／180／365 日，登入後
-可以延長（最遠今日起計 365 日）。支援多個主域名、即時刪除、更換存取碼、
-安全睇信（HTML 過濾、外來圖片預設封鎖、驗證碼一撳複製）。用過嘅地址
-永遠唔會再派俾第二個人。部署方法睇上面英文部分。
+自行部署嘅私人臨時郵箱，行晒喺 Cloudflare 上面（Email Routing + Workers + D1 + R2），
+只收信、唔使註冊。每個郵箱由系統隨機生成地址，再加一條隨機存取碼做登入；
+保存期限建立嗰陣揀 7／30／90／180／365 日，登入後可以延長（最遠今日起計 365 日）。
+支援多個主域名、即時刪除、更換存取碼、安全睇信（HTML 過濾、外來圖片預設封鎖、
+驗證碼一撳複製）。用過嘅地址永遠唔會再派俾第二個人。部署方法睇上面英文部分。
 
 ## License
 
