@@ -1,0 +1,45 @@
+{
+  // Private Temp Mail — Cloudflare Worker configuration.
+  // Copy this file's values to your own setup:
+  //   1. Replace the D1 `database_id` with the ID printed by `npm run db:create`.
+  //   2. Replace `example.com` in BOTH places below with your own apex domain(s).
+  //      Multiple domains: "EMAIL_DOMAINS": "example.com,example.net"
+  //      and one "*@domain" entry per domain in `addresses`.
+  //   3. Every domain's DNS must be hosted on Cloudflare, in the same account.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "private-temp-mail",
+  "main": "src/index.js",
+  "compatibility_date": "2025-06-01",
+
+  // Email Routing rules managed by Wrangler: one catch-all per apex domain,
+  // all routed to this Worker. Catch-all is only available on apex domains,
+  // not subdomains. Enabling this takes over the domain's MX records —
+  // do NOT use a domain that already receives real mail elsewhere.
+  "addresses": ["*@example.com"],
+
+  "vars": {
+    // Domains this instance issues mailboxes for (comma-separated, apex only).
+    "EMAIL_DOMAINS": "example.com"
+  },
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "private-temp-mail",
+      "database_id": "REPLACE_WITH_YOUR_D1_DATABASE_ID",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  "r2_buckets": [
+    {
+      "binding": "MAIL_BUCKET",
+      "bucket_name": "private-temp-mail"
+    }
+  ],
+
+  // Hourly cleanup of expired mailboxes.
+  "triggers": {
+    "crons": ["0 * * * *"]
+  }
+}
