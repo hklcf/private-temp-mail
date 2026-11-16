@@ -4,7 +4,7 @@
 // This is a convenience heuristic only — it never gates any behaviour.
 
 const KEYWORD_RE =
-  /(?:verification|verify|one[- ]?time|passcode|otp|security code|login code|auth code|code|驗證碼|驗證|認證碼|確認碼)[^\d]{0,32}(\d[\d\s-]{2,9}\d)(?![0-9A-Za-z])/gi;
+  /(?:verification|verify|one[- ]?time|passcode|otp|security code|login code|auth code|code|驗證碼|驗證|認證碼|確認碼|验证码|验证|认证码|确认码)[^\d]{0,32}(\d[\d\s-]{2,9}\d)(?![0-9A-Za-z])/gi;
 const GROUPED_RE = /\b(\d{3})[\s-](\d{3})\b/g;
 const STANDALONE_LINE_RE = /^\s*(\d{4,8})\s*$/gm;
 

@@ -74,3 +74,14 @@ test("digit run followed by a letter is a token fragment, not a code", () => {
   );
   assert.deepEqual(extractOtpCodes("Your verification code is 123456. It expires in 10 minutes."), ["123456"]);
 });
+
+test("simplified Chinese keywords: Unicom mail is detected", () => {
+  const text = "亲爱的客户： 请输入一次性验证码【 807470 】以完成电邮地址校验。验证码于10分钟内有效。 感谢您使用我们的服务。 中国联通（香港）运营有限公司 这封是来自中国联通（香港）运营有限公司的服务电邮。请勿回复此电邮。";
+  assert.deepEqual(extractOtpCodes(text), ["807470"]);
+});
+
+test("simplified Chinese keyword variants", () => {
+  assert.deepEqual(extractOtpCodes("您的验证码是 123456，请勿泄露。"), ["123456"]);
+  assert.deepEqual(extractOtpCodes("您的确认码为 654321，有效期10分钟。"), ["654321"]);
+  assert.deepEqual(extractOtpCodes("请使用以下认证码完成验证：789012"), ["789012"]);
+});

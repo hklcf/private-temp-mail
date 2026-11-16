@@ -4,6 +4,19 @@ All notable changes to this project are documented here. The format is
 based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.2.5] - 2026-11-17
+
+### Fixed
+
+- Verification codes in Simplified Chinese emails were never detected.
+  The keyword list only had the Traditional forms (驗證碼、驗證、認證
+  碼、確認碼), so a mail saying 一次性验证码 / 验证码 produced no
+  code chip even though the code was in the text body. Added the
+  Simplified forms (验证码、验证、认证码、确认码) to the keyword
+  pattern. Added 2 regression tests in `test/otp.test.js`, one with
+  the verbatim China Unicom (Hong Kong) mail text.
+- Version 0.2.4 → 0.2.5.
+
 ## [0.2.4] - 2026-11-17
 
 ### Fixed
