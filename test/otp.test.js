@@ -41,3 +41,36 @@ test("code found in HTML visible text (Meta-style HTML-only mail)", () => {
   const html = '<table><tr><td>&nbsp; 請輸入以下確認碼，為你的新 Meta 帳戶確認電郵地址。 確認碼 227091 如果你沒有索取確認碼，可以略過此訊息。 &nbsp;</td></tr></table>';
   assert.deepEqual(extractOtpCodes(htmlToText(html)), ["227091"]);
 });
+
+test("GitHub launch code: UUID in verification link is not a second code", () => {
+  const text = `Here's your GitHub launch code!
+
+Continue signing up for GitHub by entering the code below:
+
+53447232
+
+You can enter it by visiting the link below:
+
+https://github.com/account_verifications?verification=0640131f-25a8-430e-abe0-4efb28767a2b&via_launch_code_email=true
+
+You’re receiving this email because you recently created a new GitHub account. If this wasn’t you, please ignore this email.
+
+Not able to enter the code? Paste the following link into your browser:
+
+https://github.com/account_verifications/confirm/0640131f-25a8-430e-abe0-4efb28767a2b/53447232
+
+---
+Sent with <3 by GitHub.
+GitHub, Inc. 88 Colin P Kelly Jr Street
+San Francisco, CA 94107
+`;
+  assert.deepEqual(extractOtpCodes(text), ["53447232"]);
+});
+
+test("digit run followed by a letter is a token fragment, not a code", () => {
+  assert.deepEqual(
+    extractOtpCodes("https://github.com/account_verifications?verification=0640131f-25a8-430e-abe0-4efb28767a2b"),
+    []
+  );
+  assert.deepEqual(extractOtpCodes("Your verification code is 123456. It expires in 10 minutes."), ["123456"]);
+});

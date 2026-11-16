@@ -4,7 +4,7 @@
 // This is a convenience heuristic only — it never gates any behaviour.
 
 const KEYWORD_RE =
-  /(?:verification|verify|one[- ]?time|passcode|otp|security code|login code|auth code|code|驗證碼|驗證|認證碼|確認碼)[^\d]{0,32}(\d[\d\s-]{2,9}\d)/gi;
+  /(?:verification|verify|one[- ]?time|passcode|otp|security code|login code|auth code|code|驗證碼|驗證|認證碼|確認碼)[^\d]{0,32}(\d[\d\s-]{2,9}\d)(?![0-9A-Za-z])/gi;
 const GROUPED_RE = /\b(\d{3})[\s-](\d{3})\b/g;
 const STANDALONE_LINE_RE = /^\s*(\d{4,8})\s*$/gm;
 
@@ -45,7 +45,13 @@ export function htmlToText(html) {
     .trim();
 }
 
-/** Returns up to 5 unique candidate codes found in the given text. */
+/** Returns up to 5 unique candidate codes found in the given text.
+ * The keyword pattern's trailing (?![0-9A-Za-z]) rejects a digit run
+ * that is immediately followed by a letter or digit: such a run is the
+ * head of a longer token, not a code you type. The real-world case is
+ * a verification link whose UUID starts with digits, e.g.
+ * verification=0640131f-25a8-... — without the lookahead the leading
+ * 7 digits were reported as a second, bogus code. */
 export function extractOtpCodes(text) {
   const src = String(text ?? "");
   if (!src) return [];

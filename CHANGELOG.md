@@ -4,6 +4,21 @@ All notable changes to this project are documented here. The format is
 based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.2.4] - 2026-11-17
+
+### Fixed
+
+- A GitHub launch-code email was detected as having two verification
+  codes. The real code was `53447232`; the second one, `0640131`,
+  was the leading digits of the UUID in the verification links
+  (`verification=0640131f-25a8-...`). The keyword pattern saw
+  "verification=" followed by digits and took them for a code, without
+  checking that a letter followed — i.e. that the digits were only the
+  head of a longer token. The pattern now rejects a digit run that is
+  immediately followed by a letter or digit. Added 2 regression tests
+  in `test/otp.test.js`, one with the verbatim GitHub mail text.
+- Version 0.2.3 → 0.2.4.
+
 ## [0.2.3] - 2026-11-16
 
 ### Fixed
