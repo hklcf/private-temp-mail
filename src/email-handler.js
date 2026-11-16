@@ -7,7 +7,7 @@
 
 import PostalMime from "postal-mime";
 import { getLiveMailboxByAddress } from "./db.js";
-import { extractOtpCodes } from "./lib/otp.js";
+import { extractOtpCodes, htmlToText } from "./lib/otp.js";
 
 function attachmentBytes(content) {
   if (content instanceof Uint8Array) return content;
@@ -40,7 +40,15 @@ export async function handleEmail(message, env) {
   }
 
   const attachments = parsed.attachments ?? [];
-  const textBody = parsed.text ?? "";
+  // OTP detection and the inbox preview both read the text body, but some
+  // senders (Meta included) send HTML-only mail: parsed.text is empty and
+  // the code only exists in the HTML part. Fall back to the HTML part's
+  // visible text when there is no text part, so those codes are still
+  // detected and the message still gets a preview. When a text part
+  // exists it is used unchanged.
+  const textBody = (parsed.text ?? "").trim()
+    ? parsed.text
+    : htmlToText(parsed.html ?? "");
   const otpCodes = extractOtpCodes([parsed.subject ?? "", textBody].join("\n"));
 
   await env.DB.prepare(

@@ -4,6 +4,23 @@ All notable changes to this project are documented here. The format is
 based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.2.3] - 2026-11-16
+
+### Fixed
+
+- Verification codes in HTML-only emails were never detected. OTP
+  extraction only scanned the text/plain part, but some senders (Meta
+  included) send HTML-only mail, so the code existed only in the HTML
+  part and the inbox showed no code chip (and no preview, since the
+  preview also comes from the text body). The handler now falls back
+  to the HTML part's visible text — tags stripped before entities are
+  decoded, so digits inside attributes can never be mistaken for a
+  code — when a message has no text part. Messages with a text part
+  are unchanged. Added `htmlToText` in `src/lib/otp.js` and
+  `test/otp.test.js` (3 tests) plus a regression test with an
+  HTML-only Meta-style sample in `test/email-parse.test.js`.
+- Version 0.2.2 → 0.2.3.
+
 ## [0.2.2] - 2026-11-16
 
 ### Fixed

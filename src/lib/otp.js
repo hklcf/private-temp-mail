@@ -20,6 +20,31 @@ function plausible(code, fullText) {
   return true;
 }
 
+/**
+ * Visible text of an HTML email body: style/script/comments stripped,
+ * tags replaced by spaces, common entities decoded, whitespace collapsed.
+ * Used when a message has no text/plain part, so code detection and the
+ * inbox preview still have something to read. Tags are stripped before
+ * entities are decoded, so digits inside attributes (widths, colours,
+ * tracking ids) can never be mistaken for a code.
+ */
+export function htmlToText(html) {
+  return String(html ?? "")
+    .replace(/<style[\s\S]*?<\/style\s*>/gi, " ")
+    .replace(/<script[\s\S]*?<\/script\s*>/gi, " ")
+    .replace(/<!--[\s\S]*?-->/g, " ")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#0?39;/g, "'")
+    .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 /** Returns up to 5 unique candidate codes found in the given text. */
 export function extractOtpCodes(text) {
   const src = String(text ?? "");
